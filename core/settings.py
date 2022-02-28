@@ -28,6 +28,10 @@ SECRET_KEY = 'django-insecure-t(!*dd$da+-r(c(njs3c1dz*$chdiha-1#z+lyv!n5ax$xpj!c
 DEBUG = True
 
 ALLOWED_HOSTS = []
+AUTHENTICATION_BACKENDS = [
+    # 'django.contrib.auth.backends.ModelBackend',
+    'customLogin.mobilebackend.ModelBackend'
+]
 
 
 # Application definition
@@ -54,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'core.dashboardMiddleware.DashboardMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -74,6 +80,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'helper': 'core.helper',
+            },
         },
     },
 ]
@@ -132,10 +141,12 @@ STATIC_URL = 'static/'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = (os.path.join(CORE_DIR, 'core/static'),)
 
+
+AUTH_USER_MODEL = 'customLogin.MyUser'
 
 Kavenegar_ATP = '111' # your Key
 Kavenegar_Number = '111' # Your Number
@@ -145,4 +156,3 @@ PREPEND_WWW = False
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
