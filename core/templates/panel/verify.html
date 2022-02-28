@@ -1,0 +1,28 @@
+{% extends 'panel/layout/auth.html' %}
+
+{% block auth %}
+    <form action="{% url 'mobile_verify' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group position-relative has-icon-right mb-4">
+            <input type="text" class="form-control form-control-xl text-center" name="opt"
+                   placeholder="کد ارسال شده به شماره شما">
+            <div class="form-control-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+        </div>
+        <button class="btn btn-outline-success btn-block btn-lg shadow-lg">بررسی و ورود</button>
+        <a href="{% url 'change_verify_code' %}" class="btn btn-outline-warning btn-block btn-lg shadow-lg margin-top-20">درخواست
+            کد جدید</a>
+        <div class="row margin-top-20">
+            <div class="col-md-6">
+                <a href="{% url 'home' %}" class="btn btn-block btn-light">صفحه نخست</a>
+            </div>
+            <div class="col-md-6">
+                <a href="{% url 'login_page' %}" class="btn btn-block btn-light">ورود با شماره دیگر</a>
+            </div>
+        </div>
+        {% for message in messages %}
+            <p class="text text-{{ message.tags }} text-sm text-center">{{ message }}</p>
+        {% endfor %}
+    </form>
+{% endblock %}

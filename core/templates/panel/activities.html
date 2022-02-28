@@ -1,0 +1,169 @@
+{% extends 'panel/layout/base.html' %}
+
+{% load helper %}
+
+{% load static %}
+
+{% block content %}
+    <section class="section text-right">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">فعالیت های قرآنی من</h4>
+                    </div>
+                    <div class="card-content">
+                        <!-- table head dark -->
+                        <div class="table-responsive">
+                            <table class="table mb-0 text-center">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th>توسط</th>
+                                    <th>نوع شخص</th>
+                                    <th>نوع فعالیت پژوهشی</th>
+                                    <th>مدرک</th>
+                                    <th>تاریخ ارسال</th>
+                                    <th>وضعیت بررسی</th>
+                                    <th>گزینه ها</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for activity in activities %}
+                                    <tr data-id="{{ activity.id }}">
+                                        <td>{{ activity.user.first_name }} {{ activity.user.last_name }}</td>
+                                        <td>
+                                            {% if activity.person is 1 %}
+                                                <i class="text-success">حقیقی</i>
+                                            {% else %}
+                                                <i class="text-primary">حقوقی</i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if activity.cat.type is 1 %}
+                                                آموزشی
+                                            {% elif activity.cat.type is 2 %}
+                                                پژوهشی
+                                            {% else %}
+                                                تبلیغی و ترویجی
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ activity.cat.title }}</td>
+                                        <td>{% toJalali activity.created_at %}</td>
+                                        <td>
+
+                                            {% if activity.status is 0 %}
+                                                <span class="badge bg-secondary">بررسی نشده</span>
+                                            {% elif activity.status is 2 %}
+                                                <span class="badge bg-success">تایید شده</span>
+                                            {% elif activity.status is 1 %}
+                                                <span class="badge bg-danger">رد شده</span>
+                                            {% endif %}
+
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-danger btn-delete">حذف</button>
+                                            <a href="{% url 'dashboard_show_activitie' activity.id %}" class="btn btn-sm btn-outline-info">مشاهده</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% if activities.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-primary pagination-lg">
+                            {% if activities.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ activities.previous_page_number }}">
+                                        <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ activities.previous_page_number }}">{{ activities.previous_page_number }}</a>
+                                </li>
+                            {% endif %}
+                            <li class="page-item active">
+                                <a class="page-link" href="#">{{ activities.number }}</a>
+                            </li>
+
+                            {% if activities.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ activities.next_page_number }}">{{ activities.next_page_number }}</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ activities.next_page_number }}">
+                                        <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-delete').click(function () {
+                tag = $(this).parents('tr');
+                Swal.fire({
+                    title: 'آیا از حذف این آیتم مطمئن هستید؟',
+                    text: "برای بازگرداندن آیتم حذف شده، کاربر مجددا باید درخواست ارسال کند",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'لغو',
+                    confirmButtonText: 'بله، حذف شود'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var data = new FormData();
+                        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                        data.append('id', tag.attr('data-id'));
+                        if (window.XMLHttpRequest) {
+                            var xhr = new XMLHttpRequest();
+                        } else {
+                            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        xhr.open('POST', "{% url 'dashboard_activities_delete' %}", true);
+                        xhr.onload = function () {
+                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                if (xhr.responseText == 1) {
+                                    tag.remove();
+                                    Swal.fire(
+                                        'حذف شد',
+                                        'آیتم مورد نظر با موفقیت حذف شد',
+                                        'success'
+                                    )
+                                } else {
+                                    Swal.fire(
+                                        'خطا',
+                                        'عملیات حذف موفق نبود',
+                                        'error'
+                                    )
+                                }
+                            } else {
+                                Swal.fire(
+                                    'خطا',
+                                    'عملیات حذف موفق نبود',
+                                    'error'
+                                )
+                            }
+                        };
+                        xhr.send(data);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

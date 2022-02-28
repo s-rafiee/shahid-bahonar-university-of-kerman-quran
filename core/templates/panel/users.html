@@ -1,0 +1,145 @@
+{% extends 'panel/layout/base.html' %}
+
+{% load static %}
+{% load helper %}
+
+{% block content %}
+    <section class="section text-right">
+        <div class="row" id="table-hover-row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">تمام کاربرانی که در وب سایت ثبت نام کرده اند</h4>
+                    </div>
+                    <div class="card-content">
+                        <!-- table hover -->
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 text-center">
+                                <thead>
+                                <tr>
+                                    <th>نام</th>
+                                    <th>نام خانوادگی</th>
+                                    <th>کد ملی</th>
+                                    <th>شماره تلفن</th>
+                                    <th>تصویر</th>
+                                    <th>تاریخ ثبت نام</th>
+                                    <th>آخرین ورود</th>
+                                    <th>فعالیت ها</th>
+                                    <th>وضعیت حساب</th>
+                                    <th>دسترسی</th>
+                                    <th>گزینه ها</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in users %}
+                                    <tr data-id="{{ user.id }}">
+                                        <td>{{ user.first_name }}</td>
+                                        <td>{{ user.last_name }}</td>
+                                        <td>{{ user.national_code }}</td>
+                                        <td>{{ user.mobile }}</td>
+                                        <td>
+                                            <div class="avatar avatar-md">
+                                                <img src="{% static "assets/images/faces/1.jpg" %}">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% toJalali user.date_joined %}
+                                        </td>
+                                        <td>
+                                            {% toJalali user.last_login %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'dashboard_user_profile' user.id %}"
+                                               class="btn btn-primary btn-sm">مشاهده</a>
+                                        </td>
+                                        <td>
+                                            {% if user.completed %}
+                                                <i class="text-success">تکمیل</i>
+                                            {% else %}
+                                                <i class="text-danger">عدم تکمیل</i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user.is_superuser %}
+                                                مدیر
+                                            {% else %}
+                                                کاربر
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group-vertical" role="group" aria-label="Basic example">
+                                                <button class="btn btn-sm btn-outline-danger btn-delete">حذف</button>
+                                                <a href="" class="btn btn-sm btn-outline-info">ویرایش
+                                                    پروفایل</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-delete').click(function () {
+                tag = $(this).parents('tr');
+                Swal.fire({
+                    title: 'آیا از حذف این آیتم مطمئن هستید؟',
+                    text: "کلیه اطلاعات مرتبط با این کاربر حذف خواهد شود و امکان بازگشت وجود نخواد داشت",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'لغو',
+                    confirmButtonText: 'بله، حذف شود'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var data = new FormData();
+                        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                        data.append('id', tag.attr('data-id'));
+                        if (window.XMLHttpRequest) {
+                            var xhr = new XMLHttpRequest();
+                        } else {
+                            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        xhr.open('POST', "{% url 'dashboard_users_delete' %}", true);
+                        xhr.onload = function () {alert(xhr.responseText)
+                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                if (xhr.responseText == 1) {
+                                    tag.remove();
+                                    Swal.fire(
+                                        'حذف شد',
+                                        'آیتم مورد نظر با موفقیت حذف شد',
+                                        'success'
+                                    )
+                                } else {
+                                    Swal.fire(
+                                        'خطا',
+                                        'عملیات حذف موفق نبود',
+                                        'error'
+                                    )
+                                }
+                            } else {
+                                Swal.fire(
+                                    'خطا',
+                                    'عملیات حذف موفق نبود',
+                                    'error'
+                                )
+                            }
+                        };
+                        xhr.send(data);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

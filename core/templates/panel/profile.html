@@ -1,0 +1,171 @@
+{% extends 'panel/layout/base.html' %}
+
+{% load static %}
+{% load helper %}
+
+
+{% block title %}
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="row match-height text-right">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">اطلاعات حساب شما</h4>
+                        {% if request.user.complated %}
+
+                        <p class="text-warning">برای دسترسی به سامانه اطلاعات حساب خود را کامل کنید.</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form class="form" method="post" action="{% url 'dashboard_profile' %}"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="name">نام<span class="text-danger">*</span></label>
+                                            <input value="{{ user.first_name }}" type="text" class="form-control"
+                                                   name="name" id="name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="last_name">نام خانوادگی<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{{ user.last_name }}" type="text" class="form-control"
+                                                   name="last_name" id="last_name">
+                                        </div>
+                                    </div>
+                                    {% if not request.user.completed or request.user.is_superuser%}
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="national_code">کد ملی<span
+                                                        class="text-danger">*</span></label>
+                                                <input value="{{ user.national_code }}" type="text" class="form-control"
+                                                       name="national_code" id="national_code">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="gender">جنسیت<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control" name="gender">
+                                                <option>-- انتخاب کنید --</option>
+                                                <option value="man" {% if user.gender is True %} selected {% endif %}>
+                                                    مرد
+                                                </option>
+                                                <option value="female" {% if user.gender is False %}
+                                                        selected {% endif %}>زن
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="father">نام پدر<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{{ user.father }}" type="text" class="form-control"
+                                                   name="father" id="father">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="birthday">تاریخ تولد<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{% if user.birthday is not None %}{{ user.birthday }}{% endif %}"
+                                                   type="text"
+                                                   class="form-control datepicker"
+                                                   name="birthday" id="birthday">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="city">شهر محل سکونت<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control" name="city">
+                                                <option>-- انتخاب کنید --</option>
+                                                {% for c in city %}
+                                                    <option value="{{ c }}" {% if c == user.city %}
+                                                            selected{% endif %}>{{ c }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="address">آدرس<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{{ user.address }}" type="text" class="form-control"
+                                                   name="address" id="address" placeholder="کرمان-....">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="postal_code">کد پستی<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{{ user.postal_code }}" type="text" class="form-control"
+                                                   name="postal_code" id="postal_code">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="mail">ایمیل<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{{ user.email }}" type="email" class="form-control"
+                                                   name="mail" id="mail">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="tel">شماره ثابت (همراه با پیش شماره)<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{{ user.tel }}" type="text" class="form-control"
+                                                   name="tel" id="tel">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="birthday">تصویر<span
+                                                    class="text-danger">*</span></label>
+                                            <input value="{{ father.image }}" type="file" class="form-control"
+                                                   name="image" id="image">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 d-flex">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">ذخیره</button>
+
+                                        {% for message in messages %}
+                                            <p class="text text-{{ message.tags }} text-sm margin-10">{{ message }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'assets/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-datepicker.fa.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                yearRange: 'c-120:c+1',
+                changeMonth: true,
+                changeYear: true,
+            });
+        });
+    </script>
+{% endblock %}

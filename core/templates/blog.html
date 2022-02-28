@@ -1,0 +1,55 @@
+{% extends 'layouts/base.html' %}
+
+{% load static %}
+
+{% load helper %}
+
+{% block content %}
+    <section class="container">
+        <div class="row justify-content-center" id="blog">
+            <div class="col-md-8"  data-aos="fade-up" data-aos-duration="2000">
+                <img src="/media/{{ blog.image }}" alt="{{ blog.title }}" class="blog-image">
+            </div>
+            <div class="col-md-8"  data-aos="fade-up" data-aos-duration="2000">
+                <h1 class="blog-title">{{ blog.title }}</h1>
+                <p class="blog-sub-title">{% toJalali blog.updated_at %}</p>
+            </div>
+            <div class="col-md-8"  data-aos="fade-up" data-aos-duration="2000">
+                <blockquote class="blog-description">{{ blog.description }}</blockquote>
+            </div>
+            <div class="col-md-8 blog-body"  data-aos="fade-up" data-aos-duration="2000">
+                {% autoescape off %}
+                    {{ blog.body }}
+                {% endautoescape %}
+            </div>
+        </div>
+    </section>
+    <section class="container margin-top-60 margin-bottom-60">
+        <div class="row blog-boxs">
+            <div class="col-md-12">
+                <h3 class="blog-boxs-title">نوشته های دیگر</h3>
+            </div>
+            {% for blog in blogs %}
+                <div class="col-md-12 col-lg-6" data-aos="fade-up" data-aos-duration="2000">
+                    <div class="row blog-box">
+                        <div class="col-md-4 col-lg-12 col-xl-4 bi-align-start">
+                            <div class="pic">
+                                <img src="/media/{{ blog.image }}" alt="{{ blog.title }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-12 col-xl-8 bi-align-start">
+                            <div class="blog-header">
+                                <h2><a href="{% url 'blog' blog.id %}">{{ blog.title }}</a></h2>
+                                <span>{% toJalali blog.updated_at %}</span>
+                            </div>
+                            <div class="blog-desc">{{ blog.description }}</div>
+                            <div class="blog-footer">
+                                <a href="{% url 'blog' blog.id %}" class="btn btn-outline-success">مشاهده</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'panel/layout/base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="text-right">
+        <div class="row match-height">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        {% if cat.id %}
+                            <h4 class="card-title">ویرایش فعالیت قرآنی</h4>
+                            <p>تغییرات لازم را انجام دهید و ذخیره کنید.</p>
+                        {% else %}
+                            <h4 class="card-title">ایجاد نوع جدیدی از فعالیت های قرآنی</h4>
+                            <p>نوع جدید از فعالیت های قرآنی را ایجاد کنید.</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form class="form" method="post" action="
+
+
+
+
+                                    {% if cid %}{% url 'dashboard_categories' cid %}{% else %}{% url 'dashboard_categories' %}{% endif %}">
+                                {% csrf_token %}
+                                {% if cat.id %}
+                                    <input type="hidden" name="id" value="{{ cat.id }}">
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">عنوان <i
+                                                    class="text text-danger">*</i></label>
+                                            <input type="text" class="form-control" name="title"
+                                                   value="{{ cat.title }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">عنوان انگلیسی <i
+                                                    class="text text-danger">*</i></label>
+                                            <input type="text" class="form-control" name="tag" value="{{ cat.tag }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">نوع گروه <i
+                                                    class="text text-danger">*</i></label>
+                                            <select class="form-control" name="type">
+                                                <option value="1" {% if cat.type is 1 %}selected{% endif %}>آموزشی
+                                                </option>
+                                                <option value="2" {% if cat.type is 2 %}selected{% endif %}>پژوهشی
+                                                </option>
+                                                <option value="3" {% if cat.type is 3 %}selected{% endif %}>تبلیغی و
+                                                    ترویجی
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">زیر گروه <i
+                                                    class="text text-danger">*</i></label>
+                                            <select class="form-control" name="parent">
+                                                <option value="0">پیش فرض</option>
+                                                {% for c in cats %}
+                                                    <option value="{{ c.id }}"
+                                                            {% if c.id is cat.parent %}selected{% endif %}>{{ c.title }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-start">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">ذخیره</button>
+                                        <a href="{% url 'dashboard_categories' %}" type="reset"
+                                           class="btn btn-light-secondary me-1 mb-1">انصراف</a>
+                                        {% for message in messages %}
+                                            <p class="margin-10 text text-{{ message.tags }}">{{ message }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="text-right">
+        <div class="row" id="table-hover-row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">انواع فعالیت های قرآنی</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <p>فعالیت های قرآنی کاربران در این گروه ها قرار می گیرند.</p>
+                        </div>
+                        <!-- table hover -->
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center">
+                                <thead>
+                                <tr>
+                                    <th>عنوان</th>
+                                    <th>عنوان انگلیسی</th>
+                                    <th>نوع گروه</th>
+                                    <th>زیر گروه</th>
+                                    <th>گزینه ها</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for cat in allCats %}
+                                    <tr data-id="{{ cat.id }}">
+                                        <td>{{ cat.title }}</td>
+                                        <td>{{ cat.tag }}</td>
+                                        <td>
+                                            {% if cat.type is 1 %}
+                                                آموزشی
+                                            {% elif cat.type is 2 %}
+                                                پژوهشی
+                                            {% else %}
+                                                تبلیغی و ترویجی
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% for c in cats %}
+                                                {% if cat.parent is c.id %}
+                                                    {{ c.title }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <div class="buttons">
+                                                <a href="{% url 'dashboard_categories' cat.id %}"
+                                                   class="btn btn-success btn-sm">ویرایش</a>
+                                                <button class="btn btn-outline-danger btn-sm btn-delete">حذف</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-delete').click(function () {
+                tag = $(this).parents('tr');
+                Swal.fire({
+                    title: 'آیا از حذف این آیتم مطمئن هستید؟',
+                    text: "تمام آیتم های که زیر گروه این آیتم هستند به گروه اصلی تبدیل می شوند",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'لغو',
+                    confirmButtonText: 'بله، حذف شود'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var data = new FormData();
+                        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                        data.append('id', tag.attr('data-id'));
+                        if (window.XMLHttpRequest) {
+                            var xhr = new XMLHttpRequest();
+                        } else {
+                            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        xhr.open('POST', "{% url 'dashboard_categories_delete' %}", true);
+                        xhr.onload = function () {
+                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                if (xhr.responseText == 1) {
+                                    tag.remove();
+                                    Swal.fire(
+                                        'حذف شد',
+                                        'آیتم مورد نظر با موفقیت حذف شد',
+                                        'success'
+                                    )
+                                } else {
+                                    Swal.fire(
+                                        'خطا',
+                                        'عملیات حذف موفق نبود',
+                                        'error'
+                                    )
+                                }
+                            } else {
+                                Swal.fire(
+                                    'خطا',
+                                    'عملیات حذف موفق نبود',
+                                    'error'
+                                )
+                            }
+                        };
+                        xhr.send(data);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

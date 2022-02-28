@@ -1,0 +1,162 @@
+{% extends 'panel/layout/base.html' %}
+{% load static %}
+
+{% block title %}
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="text-right">
+        <div class="row match-height">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">اضافه کردن فعالیت قرآنی جدید (ویژه افراد حقیقی)</h4>
+                        <p>با توجه به نوع فعالیت، مدرک خود را انتخاب کنید و اطلاعات خواسته شده راجع به آن را برای ما
+                            ارسال کنید.</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form class="form" method="post" action="{% url 'dashboard_create_actual' %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">نوع فعالیت پژوهشی <i
+                                                    class="text-danger">*</i></label>
+                                            <select name="type" class="form-control" id="type">
+                                                <option>انتخاب کنید</option>
+                                                <option value="1">آموزشی</option>
+                                                <option value="2">پژوهشی</option>
+                                                <option value="3"> تبلیغی و ترویجی
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">گروه ها <i
+                                                    class="text-danger">*</i></label>
+                                            <select name="group" class="form-control" id="group">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">انتخاب مدرک <i
+                                                    class="text-danger">*</i></label>
+                                            <select name="certificate" class="form-control" id="certificate">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="exporter">صادر کننده مدرک <i class="text-danger">*</i></label>
+                                            <input type="text" id="exporter" value="{{ old.exporter }}" class="form-control" name="exporter">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="year">تاریخ دریافت مدرک <i class="text-danger">*</i></label>
+                                            <input class="form-control datepicker" value="{{ old.year }}" name="year" id="year">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="expiration">اعتبار تا تاریخ <i class="text-danger">*</i></label>
+                                            <input type="text" id="expiration" value="{{ old.expiration }}" class="form-control datepicker"
+                                                   name="expiration">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="image">عکس مدرک (jpg, jpeg, png) <i
+                                                    class="text-danger">*</i></label>
+                                            <input type="file" id="image" class="form-control" name="image">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-start">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">ارسال</button>
+                                    </div>
+                                    {% for message in messages %}
+                                        <p class="text text-{{ message.tags }}">{{ message }}</p>
+                                    {% endfor %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-datepicker.fa.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                format: "yyyy-M-D",
+                yearRange: 'c-80:c+1',
+                changeMonth: true,
+                changeYear: true,
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#type').on('change', function () {
+                var data = new FormData();
+                data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                data.append('type', $(this).val());
+                data.append('parent', 0);
+                if (window.XMLHttpRequest) {
+                    var xhr = new XMLHttpRequest();
+                } else {
+                    var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xhr.open('POST', "{% url 'dashboard_get_categories' %}", true);
+                xhr.onload = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        result = JSON.parse(xhr.responseText);
+                        html = '<option>انتخاب کنید</option>'
+                        for (i = 0; i < result['result'].length; i++) {
+                            html += '<option value="' + result['result'][i]['id'] + '">' + result['result'][i]['title'] + '</option>';
+                        }
+                        $('#group').html(html);
+                    }
+                };
+                xhr.send(data);
+            });
+
+            $('#group').on('change', function () {
+                var data = new FormData();
+                data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                data.append('type', $('#type').val());
+                data.append('parent', $(this).val());
+                if (window.XMLHttpRequest) {
+                    var xhr = new XMLHttpRequest();
+                } else {
+                    var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xhr.open('POST', "{% url 'dashboard_get_categories' %}", true);
+                xhr.onload = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        result = JSON.parse(xhr.responseText);
+                        html = '<option>انتخاب کنید</option>'
+                        for (i = 0; i < result['result'].length; i++) {
+                            html += '<option value="' + result['result'][i]['id'] + '">' + result['result'][i]['title'] + '</option>';
+                        }
+                        $('#certificate').html(html);
+                    }
+                };
+                xhr.send(data);
+            });
+        });
+    </script>
+{% endblock %}

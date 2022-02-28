@@ -1,0 +1,146 @@
+{% extends 'panel/layout/base.html' %}
+
+{% load static %}
+{% load helper %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="section text-right">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>اطلاعات فعالیت ثبت شده</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 margin-top-20">
+                                فرستنده: {{ activity.user.first_name }} {{ activity.user.last_name }}
+                            </div>
+                            <div class="col-md-6 margin-top-20">
+                                نوع شخض: {% if activity.person is 1 %}
+                                <i class="text-success">حقیقی</i>
+                            {% else %}
+                                <i class="text-primary">حقوقی</i>
+                            {% endif %}
+                            </div>
+                            <div class="col-md-6 margin-top-20">
+                                نوع فعالیت پژوهشی:
+                                {% if activity.cat.type is 1 %}
+                                    آموزشی
+                                {% elif activity.cat.type is 2 %}
+                                    پژوهشی
+                                {% else %}
+                                    تبلیغی و ترویجی
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 margin-top-20">
+                                مدرک: {{ activity.cat.title }}
+                            </div>
+                            <div class="col-md-6 margin-top-20">
+                                تاریخ ارسال: {% toJalali activity.created_at %}
+                            </div>
+                            {% if activity.person is 1 %}
+                                <div class="col-md-6 margin-top-20">
+                                    موسسه ارائه دهنده مدرک: {{ activity.exporter }}
+                                </div>
+                                <div class="col-md-6 margin-top-20">
+                                    تاریخ اخذ مدرک: {{ activity.start_date }}
+                                </div>
+                                <div class="col-md-12 margin-top-20">
+                                    <label>تصویر مدرک ارسالی</label>
+                                    <img src="/media/{{ activity.image }}" style="max-width: 100%">
+                                </div>
+                            {% else %}
+                                <div class="col-md-6 margin-top-20">
+                                    نام موسسه: {{ activity.company_name }}
+                                </div>
+                                <div class="col-md-6 margin-top-20">
+                                    نام مدیر مسئول موسسه: {{ activity.admin_first_name }} {{ activity.admin_last_name }}
+                                </div>
+                                <div class="col-md-6 margin-top-20">
+                                    کد ملی مدیر مسئول موسسه: {{ activity.admin_national_code }}
+                                </div>
+                                <div class="col-md-6 margin-top-20">
+                                    شماره موسسه: {{ activity.tel }}
+                                </div>
+                                <div class="col-md-6 margin-top-20">
+                                    شهر موسسه: {{ activity.city }}
+                                </div>
+                                <div class="col-md-6 margin-top-20">
+                                    آدرس موسسه: {{ activity.address }}
+                                </div>
+                                <div class="col-md-6 margin-top-20">
+                                    کد پستی موسسه: {{ activity.postal_code }}
+                                </div>
+                                <div class="col-md-12 margin-top-20">
+                                    <label>تصویر مدرک ارسالی</label>
+                                    <img src="/media/{{ activity.image }}" style="max-width: 100%">
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer">
+                            {% if request.user.is_superuser %}
+                                <div class="row">
+                                    <form action="{% url 'dashboard_activitie_change_status' activity.id %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-check  justify-content-start">
+                                                    <label class="form-check-label" for="flexRadioDefault1">
+                                                        پذیرفته شده
+                                                    </label>
+                                                    <input class="form-check-input float-end" style="margin-left: 1.6em"
+                                                           type="radio" name="status" value="2"
+                                                           id="flexRadioDefault1"
+                                                           {% if activity.status is 2 %}checked{% endif %}>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <label class="form-check-label" for="flexRadioDefault2">
+                                                        پذیرفته نشده
+                                                    </label>
+                                                    <input class="form-check-input float-end" style="margin-left: 1.6em"
+                                                           type="radio" name="status" value="1"
+                                                           id="flexRadioDefault2"
+                                                           {% if activity.status is 1 %}checked{% endif %}>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <label class="form-check-label" for="flexRadioDefault3">
+                                                        بررسی نشده
+                                                    </label>
+                                                    <input class="form-check-input float-end" style="margin-left: 1.6em"
+                                                           type="radio" name="status" value="0"
+                                                           id="flexRadioDefault3"
+                                                           {% if activity.status is 0 %}checked{% endif %}>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button class="btn btn-outline-success margin-top-20">تغییر</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <div class="col-md-6">وضعیت بررسی: {% if activity.status is 0 %}
+                                    <span class="text-warning">بررسی نشده</span>{% elif activity.status is 1 %}
+                                    <span class="text-danger">رد شده</span>{% else %}
+                                    <span class="text-success">پذیرفته شده</span>{% endif %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

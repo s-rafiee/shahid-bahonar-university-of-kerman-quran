@@ -1,0 +1,95 @@
+.auth-body {
+    /*background: url(../images/bg/4853433.jpg),#2d499d;*/
+    background: url("../../images/amar.png");
+    background-size: cover;
+}
+
+.auth-body .container-fluid {
+    background: url("../../images/bg3.png");
+    background-size: cover;
+}
+
+#auth {
+    background: #ededed;
+}
+
+html, body {
+    height: 100%;
+}
+
+#auth .logo {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 50px;
+}
+
+#auth .logo img {
+    width: 120px;
+    height: 120px;
+}
+
+#auth h1 {
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 50px;
+    color: #666;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.text-right {
+    direction: rtl;
+    text-align: right;
+}
+
+.margin-10 {
+    margin: 10px;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-bottom-right-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: .25rem !important;
+    border-top-left-radius: .25rem !important;
+}
+
+.pagination .page-item:first-child .page-link {
+    border-bottom-left-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+    border-bottom-right-radius: .25rem !important;
+    border-top-right-radius: .25rem !important;
+}
+
+.dropdown a {
+    text-decoration: none
+}
+
+.margin-top-60 {
+    margin-top: 60px;
+}
+
+.ql-editor {
+    text-align: right;
+    direction: rtl;
+}
+
+@media screen and (max-width: 992px) {
+
+}
+
+@media screen and (max-width: 768px) {
+    #auth {
+        border-radius: 0px;
+        margin: 0px;
+        height: 100%;
+        width: 100% !important;
+        position: absolute;
+    }
+
+    .auth-body {
+        background: #fff;
+    }
+}

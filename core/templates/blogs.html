@@ -1,0 +1,69 @@
+{% extends 'layouts/base.html' %}
+
+{% load static %}
+
+{% load helper %}
+
+{% block content %}
+    <section class="container margin-top-60 margin-bottom-60">
+        <div class="row blog-boxs">
+            <div class="col-md-12">
+                <h3 class="blog-boxs-title">آرشیو نوشته ها</h3>
+            </div>
+            {% for blog in blogs %}
+                <div class="col-md-12 col-lg-6" data-aos="fade-up" data-aos-duration="2000">
+                    <div class="row blog-box">
+                        <div class="col-md-4 col-lg-12 col-xl-4 bi-align-start">
+                            <div class="pic">
+                                <img src="/media/{{ blog.image }}" alt="{{ blog.title }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-12 col-xl-8 bi-align-start">
+                            <div class="blog-header">
+                                <h2><a href="{% url 'blog' blog.id %}">{{ blog.title }}</a></h2>
+                                <span>{% toJalali blog.updated_at %}</span>
+                            </div>
+                            <div class="blog-desc">{{ blog.description }}</div>
+                            <div class="blog-footer">
+                                <a href="{% url 'blog' blog.id %}" class="btn btn-outline-success">مشاهده</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if blogs.has_other_pages %}
+        <nav>
+            <ul class="pagination pagination-primary pagination-lg justify-content-center">
+                {% if blogs.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ blogs.previous_page_number }}">
+                            <span aria-hidden="true"><i class="fa fa-arrow-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ blogs.previous_page_number }}">{{ blogs.previous_page_number }}</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <a class="page-link" href="#">{{ blogs.number }}</a>
+                </li>
+                {% if blogs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ blogs.next_page_number }}">{{ blogs.next_page_number }}</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ blogs.next_page_number }}">
+                            <span aria-hidden="true"><i class="fa fa-arrow-left"></i></span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

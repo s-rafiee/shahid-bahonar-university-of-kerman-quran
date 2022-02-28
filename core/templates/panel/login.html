@@ -1,0 +1,20 @@
+{% extends 'panel/layout/auth.html' %}
+
+{% block auth %}
+    <form action="{% url 'login_page' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group position-relative has-icon-right mb-4">
+            <input type="text" class="form-control form-control-xl text-center" name="mobile"
+                   placeholder="شماره موبایل">
+            <div class="form-control-icon">
+                <i class="bi bi-phone"></i>
+            </div>
+        </div>
+
+        <button class="btn btn-success btn-block btn-lg shadow-lg">ورود یا ثبت نام</button>
+    <a href="{% url 'home' %}" class="btn btn-outline-warning btn-block btn-lg margin-top-20">بازگشت</a>
+        {% for message in messages %}
+            <p class="text text-{{ message.tags }} text-sm text-center">{{ message }}</p>
+        {% endfor %}
+    </form>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.rtl.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/fontawesome/css/all.min.css' %}">
+    <link href='http://www.fontonline.ir/css/IranNastaliq.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block css %}{% endblock %}
+</head>
+<body>
+<header>
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <div class="img">
+                        <picture>
+                            <source data-srcset="{% static 'images/besm.png' %}" type="image/webp"
+                                    srcset="{% static 'images/besm.png' %}">
+                            <img src="{% static 'images/besm.png' %}"
+                                 data-src="{% static 'images/besm.png' %}" alt=""
+                                 data-was-processed="true" class="besm">
+                        </picture>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <h2 class="nastaliq"> سامانه شناسایی، رصد و هدایت هوشمند فعالیت های قرآن و عترت استان کرمان </h2>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="img">
+                        <picture>
+                            <source data-srcset="{% static 'images/imam.png' %}" type="image/webp"
+                                    srcset="{% static 'images/imam.png' %}">
+                            <img src="{% static 'images/imam.png' %}"
+                                 data-src="{% static 'images/imam.png' %}" alt=""
+                                 data-was-processed="true" class="imam">
+                        </picture>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light box-shadow">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link{% if page == 'home' %} active{% endif %}" aria-current="page"
+                                       href="{% url 'home' %}">صفحه نخست</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link{% if page == 'blogs' %} active{% endif %}"
+                                       href="{% url 'blogs' %}">وبلاگ</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link{% if page == 'contact' %} active{% endif %}"
+                                       href="{% url 'contactus' %}">ارتباط با ما</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link{% if page == 'about' %} active{% endif %}"
+                                       href="{% url 'aboutus' %}">درباره ما</a>
+                                </li>
+                            </ul>
+                            <ul class="navbar-nav">
+                                {% if request.user.is_authenticated %}
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                           data-bs-toggle="dropdown" aria-expanded="false">
+                                            حساب کاربری
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li><a class="dropdown-item" href="{% url 'dashboard' %}">پنل کاربری</a>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item" href="{% url 'dashboard_logout' %}">خروج</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a href="{% url 'login_page' %}" class="nav-link">ورود یا ثبت نام</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+{% block content %}{% endblock %}
+<footer>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 about">
+                <h3>درباره سامانه قرآنی</h3>
+                <p> این سامانه با هدف ثبت و جمع آوری اطلاعات مربوط به فعالان قرآنی به منظور ایجاد سامانه ای برای
+                    هدایت و
+                    تشویق علاقه مندان به حوزه های متناسب با اهداف ایشان و یکپارچگی جامعه قرآنی ایجاد شده است.</p>
+            </div>
+            <div class="col-md-4">
+                <label>لینک های مرتبط</label>
+                <ul>
+                    <li>
+                        <a href="/">سامانه آموزش الکترونیکی حامیم</a>
+                    </li>
+                    <li>
+                        <a href="/">سامانه جامع قرآنی کشور</a>
+                    </li>
+                    <li>
+                        <a href="/">سامانه خادمان قرآن کریم</a>
+                    </li>
+                    <li>
+                        <a href="/">خبرگزاری ایکنا، خبرگزاری قرآنی</a>
+                    </li>
+                    <li>
+                        <a href="/">معاونت قرآن و عترت، وزارت فرهنگ و ارشاد اسلامی</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <label>تماس با ما</label>
+                <ul>
+                    <li>
+                        <a href="{% url 'contactus' %}">تماس با ما</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'aboutus' %}">درباره ما</a>
+                    </li>
+                </ul>
+                <ul class="inline-list">
+                    <li>
+                        <a href="/">
+                            <img src="{% static 'images/aparat.svg' %}" alt="">
+                        </a>
+                        <a href="/">
+                            <img src="{% static 'images/instagram.svg' %}" alt="">
+                        </a>
+                        <a href="/">
+                            <img src="{% static 'images/telegram.webp' %}" alt="">
+                        </a>
+                        <a href="/">
+                            <img src="{% static 'images/youtube.svg' %}" alt="">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sub-footer">
+        <p class="copyright">تمامی حقوق این سایت متعلق به شورای گسترش فعالیت های قرآنی استان کرمان است.</p>
+    </div>
+</footer>
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/aos.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+{% block js %}{% endblock %}
+
+</body>
+</html>

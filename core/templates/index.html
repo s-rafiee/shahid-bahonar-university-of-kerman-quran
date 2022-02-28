@@ -1,0 +1,120 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% load helper %}
+
+{% block css %}
+    <meta name="description" content="سامانه شناسایی، رصد و هدایت هوشمند فعالیت های قرآن و عترت استان کرمان">
+    <title>سامانه هوشمند فعالیت های قرآن و عترت استان کرمان</title>
+    <link href="{% static 'css/flickity.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+
+    <section id="total">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-12">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 box-item" data-aos="fade-up" data-aos-duration="2000">
+                            <div class="box-shadow">
+                                <div class="box-icon">
+                                    <img src="{% static 'images/3.svg' %}" alt="فعالان حوزه آموزش">
+                                </div>
+                                <label>حوزه آموزش</label>
+                                <p><span class="counter">{{ education }}</span> نفر</p>
+                                <a href="{% url 'activists' 'education' %}">مشاهده فعالان</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 box-item" data-aos="fade-up" data-aos-duration="2000">
+                            <div class="box-shadow">
+                                <div class="box-icon">
+                                    <img src="{% static 'images/2.svg' %}" alt="فعالان حوزه تبلیغ">
+                                </div>
+                                <label>حوزه تبلیغ</label>
+                                <p><span class="counter">{{ ad }}</span> نفر</p>
+                                <a href="{% url 'activists' 'ad' %}">مشاهده فعالان</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 box-item" data-aos="fade-up" data-aos-duration="2000">
+                            <div class="box-shadow">
+                                <div class="box-icon">
+                                    <img src="{% static 'images/4.svg' %}" alt="فعالان حوزه پژوهش">
+                                </div>
+                                <label>حوزه پژوهش</label>
+                                <p><span class="counter">{{ research }}</span> نفر</p>
+                                <a href="{% url 'activists' 'research' %}">مشاهده فعالان</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="hero container-fluid">
+        <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             viewBox="0 24 150 28 " preserveAspectRatio="none">
+            <defs>
+                <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
+                </path>
+            </defs>
+            <g class="wave1">
+                <use xlink:href="#wave-path" x="50" y="3" fill="rgba(255,255,255, .1)">
+                </use>
+            </g>
+            <g class="wave2">
+                <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255,255,255, .2)">
+                </use>
+            </g>
+            <g class="wave3">
+                <use xlink:href="#wave-path" x="50" y="9" fill="#fff">
+                </use>
+            </g>
+        </svg>
+    </div>
+    <section class="container margin-top-60 margin-bottom-60">
+        <div class="row blog-boxs">
+            <div class="col-md-12">
+                <h3 class="boxs-title">
+                    <img src="{% static 'images/bg2.png' %}" alt="">
+                    <span>آخرین اخبار</span>
+                    <img src="{% static 'images/bag3.png' %}" alt="">
+                </h3>
+            </div>
+            {% for blog in blogs %}
+                <div class="col-md-12 col-lg-6" data-aos="fade-up" data-aos-duration="2000">
+                    <div class="row blog-box">
+                        <div class="col-md-4 col-lg-12 col-xl-4 bi-align-start">
+                            <div class="pic">
+                                <img src="/media/{{ blog.image }}" alt="{{ blog.title }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-12 col-xl-8 bi-align-start">
+                            <div class="blog-header">
+                                <h2><a href="{% url 'blog' blog.id %}">{{ blog.title }}</a></h2>
+                                <span>{% toJalali blog.updated_at %}</span>
+                            </div>
+                            <div class="blog-desc">{{ blog.description }}</div>
+                            <div class="blog-footer">
+                                <a href="{% url 'blog' blog.id %}" class="btn btn-outline-success">مشاهده</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+{% endblock %}
+
+
+{% block js %}
+    {#    <script src="{% static 'js/flickity.pkgd.min.js' %}"></script>#}
+    {#    <script>#}
+    {#        $('.main-carousel').flickity({#}
+    {#            // options#}
+    {#            cellAlign: 'left',#}
+    {#            contain: true#}
+    {#        });#}
+    {#    </script>#}
+{% endblock %}

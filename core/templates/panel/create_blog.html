@@ -1,0 +1,84 @@
+{% extends "panel/layout/base.html" %}
+
+{% load static %}
+
+{% block title %}
+    <link rel="stylesheet" href="{% static "assets/vendors/quill/quill.bubble.css" %}">
+    <link rel="stylesheet" href="{% static "assets/vendors/quill/quill.snow.css" %}">
+{% endblock %}
+
+{% block content %}
+    <section class="text-right">
+        <div class="row match-height">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">ایجاد نوشته جدید</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form class="form" method="post" action="
+                                    {% if id is 0 %}{% url 'dashboard_create_blogs' %}{% else %}{% url 'dashboard_edit_blogs' id %}{% endif %}"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 col-12 margin-top-20">
+                                        <div class="form-group">
+                                            <label for="title">عنوان نوشته <i class="text-danger">*</i></label>
+                                            <input type="text" id="title" class="form-control" name="title"
+                                                   placeholder="عنوانی برای نوشته خود وارد کنید..."
+                                                   value="{{ blog.title }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12 margin-top-20">
+                                        <div class="form-group">
+                                            <label for="image">تصویر شاخص <i class="text-danger">*</i></label>
+                                            <input type="file" id="image" class="form-control" name="image">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-12 margin-top-20">
+                                        <div class="form-group">
+                                            <label for="description">خلاصه نوشته (حداکثر 256 کاراکتر) <i
+                                                    class="text-danger">*</i></label>
+                                            <input type="text" id="description" class="form-control" name="description"
+                                                   placeholder="خلاصه نوشته یا پاراگراف اصلی نوشته را وارد کنید"
+                                                   value="{{ blog.description }}">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="body" id="body" value="{% if blog.body %}{{ blog.body }}{% endif %}">
+                                    <div class="col-12 margin-top-20">
+                                        <div id="full" class="text-right">
+                                            {% if blog.body %}
+                                                {% autoescape off %}
+                                                {{ blog.body }}
+                                                {% endautoescape %}
+                                            {% else %}
+                                                <p>توضیحات خود را اینجا وارد کنید...</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row margin-top-60">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">ذخیره</button>
+                                        {% for message in messages %}
+                                            <p class="text text-{{ message.tags }}">{{ message }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+
+    <script src="{% static "assets/vendors/quill/quill.min.js" %}"></script>
+    <script src="{% static "assets/js/pages/form-editor.js" %}"></script>
+
+    <script src="{% static "assets/js/main.js" %}"></script>
+{% endblock %}

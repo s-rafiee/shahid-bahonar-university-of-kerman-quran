@@ -1,0 +1,59 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block css %}
+    <style>
+        .members {
+            background: #f6f9fe;
+        }
+
+        .member {
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 4px;
+            background: #fff;
+            box-shadow: 0px 2px 15px rgba(16, 110, 234, 0.15);
+            margin-top: 50px;
+        }
+
+        .member img {
+            height: 250px;
+        }
+
+        .member h2 {
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 18px;
+            color: #222222;
+        }
+
+        .member span {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .member .member-info {
+            padding: 25px 15px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <section class="members">
+        <div class="container">
+            <div class="row">
+                {% for activity in activities %}
+                    <div class="col-md-3">
+                        <div class="member">
+                            <div class="member-img">
+                                <img src="/media/{{ activity.image }}" class="img-fluid" alt="{{ activity.user.first_name }} {{ activity.user.last_name }}">
+                            </div>
+                            <div class="member-info">
+                                <h2>{{ activity.user.first_name }} {{ activity.user.last_name }}</h2>
+                                <span>حوزه فعالیت: {{ activity.cat.title }} {% if activity.person is 1 %}(حقیقی){% else %} (موسسه {{ activity.company_name }}){% endif %}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

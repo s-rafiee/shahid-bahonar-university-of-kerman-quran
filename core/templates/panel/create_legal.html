@@ -1,0 +1,213 @@
+{% extends 'panel/layout/base.html' %}
+{% load static %}
+
+{% block title %}
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="text-right">
+        <div class="row match-height">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">اضافه کردن فعالیت قرآنی جدید (ویژه افراد حقوقی)</h4>
+                        <p>با توجه به نوع فعالیت، اطلاعات خواسته شده راجع به موسسه خود را برای ما ارسال کنید.</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form class="form" method="post" action="{% url 'dashboard_create_legal' %}"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">نوع فعالیت پژوهشی <i
+                                                    class="text-danger">*</i></label>
+                                            <select name="type" class="form-control" id="type">
+                                                <option>انتخاب کنید</option>
+                                                <option value="1">آموزشی</option>
+                                                <option value="2">پژوهشی</option>
+                                                <option value="3"> تبلیغی و ترویجی
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">گروه ها <i
+                                                    class="text-danger">*</i></label>
+                                            <select name="group" class="form-control" id="group">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="first-name-column">انتخاب مدرک <i
+                                                    class="text-danger">*</i></label>
+                                            <select name="certificate" class="form-control" id="certificate">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="company_name">نام موسسه <i class="text-danger">*</i></label>
+                                            <input type="text" id="company_name" class="form-control"
+                                                   value="{{ old.company_name }}" name="company_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="admin_first_name">نام مدیر مسئول موسسه <i
+                                                    class="text-danger">*</i></label>
+                                            <input type="text" id="admin_first_name" class="form-control"
+                                                   value="{{ old.admin_first_name }}" name="admin_first_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="admin_last_name">نام خانوادگی مدیر مسئول موسسه <i
+                                                    class="text-danger">*</i></label>
+                                            <input type="text" id="admin_last_name" class="form-control"
+                                                   value="{{ old.admin_last_name }}" name="admin_last_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="admin_national_code">کد ملی مدیر مسئول موسسه <i
+                                                    class="text-danger">*</i></label>
+                                            <input type="text" id="admin_national_code" class="form-control"
+                                                   value="{{ old.admin_national_code }}" name="admin_national_code">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="tel">شماره تماس موسسه (شماره ثابت) <i class="text-danger">*</i></label>
+                                            <input type="text" id="tel" class="form-control" name="tel"value="{{ old.tel }}" >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="established_year">تاریخ تاسیس موسسه <i class="text-danger">*</i></label>
+                                            <input type="text" id="established_year" class="form-control datepicker"
+                                                   value="{{ old.established_year }}" name="established_year">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="address">آدرس موسسه <i class="text-danger">*</i></label>
+                                            <input type="text" id="address" class="form-control" name="address" value="{{ old.address }}" >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="city">شهرستان <i class="text-danger">*</i></label>
+                                            <select class="form-control" name="city" id="city">
+                                                {% for c in city %}
+                                                    <option value="{{ c }}" {% if c is old.city %} selected{% endif %}>{{ c }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="postal_code">کد پستی <i class="text-danger">*</i></label>
+                                            <input type="text" id="postal_code" class="form-control" name="postal_code" value="{{ old.postal_code }}" >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="image">عکس پروانه فعالیت (jpg, jpeg, png) <i
+                                                    class="text-danger">*</i></label>
+                                            <input type="file" id="image" class="form-control" name="image">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-start">
+                                        <button type="submit" class="btn btn-primary me-1 mb-1">ارسال</button>
+                                    </div>
+                                    {% for message in messages %}
+                                        <p class="text text-{{ message.tags }}">{{ message }}</p>
+                                    {% endfor %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-datepicker.fa.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                format: "yyyy-M-D",
+                yearRange: 'c-80:c+1',
+                changeMonth: true,
+                changeYear: true,
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#type').on('change', function () {
+                var data = new FormData();
+                data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                data.append('type', $(this).val());
+                data.append('parent', 0);
+                if (window.XMLHttpRequest) {
+                    var xhr = new XMLHttpRequest();
+                } else {
+                    var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xhr.open('POST', "{% url 'dashboard_get_categories' %}", true);
+                xhr.onload = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        result = JSON.parse(xhr.responseText);
+                        html = '<option>انتخاب کنید</option>'
+                        for (i = 0; i < result['result'].length; i++) {
+                            html += '<option value="' + result['result'][i]['id'] + '">' + result['result'][i]['title'] + '</option>';
+                        }
+                        $('#group').html(html);
+                    }
+                };
+                xhr.send(data);
+            });
+
+            $('#group').on('change', function () {
+                var data = new FormData();
+                data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                data.append('type', $('#type').val());
+                data.append('parent', $(this).val());
+                if (window.XMLHttpRequest) {
+                    var xhr = new XMLHttpRequest();
+                } else {
+                    var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xhr.open('POST', "{% url 'dashboard_get_categories' %}", true);
+                xhr.onload = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        result = JSON.parse(xhr.responseText);
+                        html = '<option>انتخاب کنید</option>'
+                        for (i = 0; i < result['result'].length; i++) {
+                            html += '<option value="' + result['result'][i]['id'] + '">' + result['result'][i]['title'] + '</option>';
+                        }
+                        $('#certificate').html(html);
+                    }
+                };
+                xhr.send(data);
+            });
+        });
+    </script>
+{% endblock %}

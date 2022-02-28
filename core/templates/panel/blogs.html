@@ -1,0 +1,202 @@
+{% extends "panel/layout/base.html" %}
+
+{% load static %}
+{% load helper %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="section text-right">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">نوشته های منتشر شده</h4>
+                    </div>
+                    <div class="card-content">
+                        <!-- table head dark -->
+                        <div class="table-responsive">
+                            <table class="table mb-0 text-center">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th>عنوان نوشته</th>
+                                    <th>تاریخ انتشار</th>
+                                    <th>تصویر شاخص</th>
+                                    <th>وضعیت</th>
+                                    <th>بازدید</th>
+                                    <th>گزینه ها</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for blog in blogs %}
+                                    <tr data-id="{{ blog.id }}">
+                                        <td>{{ blog.title }}</td>
+                                        <td>
+                                            {% toJalali blog.created_at %}
+                                        </td>
+                                        <td>
+                                            <div class="avatar avatar-xl">
+                                                <img src="/media/{{ blog.image }}">
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            {% if blog.status == 1 %}
+                                                <button class="btn btn-sm btn-outline-success btn-change-status">منتشر
+                                                    شده
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-sm btn-outline-danger btn-change-status">عدم
+                                                    انتشار
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ blog.visit }}</span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'blog' blog.id %}" target="_blank" class="btn btn-sm btn-outline-success">مشاهده</a>
+                                            <a href="{% url 'dashboard_edit_blogs' blog.id %}"
+                                               class="btn btn-sm btn-info">ویرایش</a>
+                                            <button class="btn btn-sm btn-outline-danger btn-delete">حذف</button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {% if blogs.has_other_pages %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-primary pagination-lg">
+                        {% if blogs.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ blogs.previous_page_number }}">
+                                    <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ blogs.previous_page_number }}">{{ blogs.previous_page_number }}</a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <a class="page-link" href="#">{{ blogs.number }}</a>
+                        </li>
+                        {% if blogs.has_next %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ blogs.next_page_number }}">{{ blogs.next_page_number }}</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ blogs.next_page_number }}">
+                                    <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.btn-change-status').click(function () {
+                tag = $(this);
+                var data = new FormData();
+                data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                data.append('id', tag.parents('tr').attr('data-id'));
+                if (window.XMLHttpRequest) {
+                    var xhr = new XMLHttpRequest();
+                } else {
+                    var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xhr.open('POST', "{% url 'dashboard_change_status_blogs' %}", true);
+                xhr.onload = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        if (xhr.responseText == 1) {
+                            tag.removeClass('btn-outline-danger');
+                            tag.addClass('btn-outline-success');
+                            tag.html('منتشر شده');
+                        } else {
+                            tag.removeClass('btn-outline-success');
+                            tag.addClass('btn-outline-danger');
+                            tag.html('عدم انتشار');
+                        }
+                    } else {
+                        Swal.fire(
+                            'خطا',
+                            'خطا در تغییر وضعیت انتشار نوشته',
+                            'error'
+                        );
+                    }
+                };
+                xhr.send(data);
+            });
+
+            $('.btn-delete').click(function () {
+                tag = $(this).parents('tr');
+                Swal.fire({
+                    title: 'آیا از حذف این آیتم مطمئن هستید؟',
+                    text: "این نوشته برای همیشه حذف خواهد شود و امکان بازگشت وجود نخواد داشت",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'لغو',
+                    confirmButtonText: 'بله، حذف شود'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var data = new FormData();
+                        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                        data.append('id', tag.attr('data-id'));
+                        if (window.XMLHttpRequest) {
+                            var xhr = new XMLHttpRequest();
+                        } else {
+                            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        xhr.open('POST', "{% url 'dashboard_delete_blogs' %}", true);
+                        xhr.onload = function () {
+                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                if (xhr.responseText == 1) {
+                                    tag.remove();
+                                    Swal.fire(
+                                        'حذف شد',
+                                        'آیتم مورد نظر با موفقیت حذف شد',
+                                        'success'
+                                    )
+                                } else {
+                                    Swal.fire(
+                                        'خطا',
+                                        'عملیات حذف موفق نبود',
+                                        'error'
+                                    )
+                                }
+                            } else {
+                                Swal.fire(
+                                    'خطا',
+                                    'عملیات حذف موفق نبود',
+                                    'error'
+                                )
+                            }
+                        };
+                        xhr.send(data);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
