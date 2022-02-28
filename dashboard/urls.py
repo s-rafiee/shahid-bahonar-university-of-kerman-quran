@@ -1,20 +1,17 @@
-"""core URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.urls import path
+from django.urls import path, include
+from . import views
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
+    path('login/', views.login_page, name="login_page"),
+    path('login/verify/', views.mobile_verify, name="mobile_verify"),
+    path('login/changecode/', views.change_verify_code, name="change_verify_code"),
 
+    path('dashboard/', views.dashboard, name="dashboard"),
+    path('dashboard/profile/', views.profile, name="dashboard_profile"),
+    path('dashboard/profile/<int:uid>/', views.profile, name="dashboard_user_profile"),
+    path('dashboard/users/', views.users, name="dashboard_users"),
+    path('dashboard/users/delete', views.users_delete, name="dashboard_users_delete"),
+
+    path('dashboard/logout/', LogoutView.as_view(), name="dashboard_logout"),
 ]
