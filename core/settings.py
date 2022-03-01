@@ -148,8 +148,8 @@ STATICFILES_DIRS = (os.path.join(CORE_DIR, 'core/static'),)
 
 AUTH_USER_MODEL = 'customLogin.MyUser'
 
-Kavenegar_ATP = '111' # your Key
-Kavenegar_Number = '111' # Your Number
+Kavenegar_ATP = '627539544B52747A566E34596A6D68526E38736544673D3D'
+Kavenegar_Number = '10008663'
 
 PREPEND_WWW = False
 
